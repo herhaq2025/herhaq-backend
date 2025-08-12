@@ -85,6 +85,29 @@ def api_chat():
     raw_response = query_engine.query(user_query)
     return jsonify({'answer': str(raw_response)})
 
+@app.route('/chat', methods=['POST', 'OPTIONS'])
+def chat():
+    # Handle CORS preflight OPTIONS request
+    if request.method == 'OPTIONS':
+        response = jsonify({'status': 'ok'})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        return response
+    
+    # Handle POST request
+    data = request.get_json()
+    user_query = data.get('query', '')
+    if not user_query:
+        return jsonify({'error': 'No query provided'}), 400
+    
+    raw_response = query_engine.query(user_query)
+    motivational_response = make_motivational_sister(str(raw_response))
+    
+    response = jsonify({'answer': motivational_response})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 10000))  # Render provides PORT env var
