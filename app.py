@@ -92,15 +92,21 @@ def chat():
         return '', 200
     
     # Handle POST request
-    data = request.get_json()
-    user_query = data.get('query', '')
-    if not user_query:
-        return jsonify({'error': 'No query provided'}), 400
-    
-    raw_response = query_engine.query(user_query)
-    motivational_response = make_motivational_sister(str(raw_response))
-    
-    return jsonify({'answer': motivational_response})
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid JSON data'}), 400
+        
+        user_query = data.get('query', '')
+        if not user_query or not isinstance(user_query, str) or user_query.strip() == '':
+            return jsonify({'error': 'No query provided'}), 400
+        
+        raw_response = query_engine.query(user_query)
+        motivational_response = make_motivational_sister(str(raw_response))
+        
+        return jsonify({'answer': motivational_response})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     import os
