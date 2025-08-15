@@ -9,7 +9,7 @@ from llama_index.core.prompts import PromptTemplate
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=['https://herhaq.org', 'https://www.herhaq.org'], supports_credentials=True)
 
 # Set your system prompt here
 SYSTEM_PROMPT = (
@@ -89,11 +89,7 @@ def api_chat():
 def chat():
     # Handle CORS preflight OPTIONS request
     if request.method == 'OPTIONS':
-        response = jsonify({'status': 'ok'})
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-        return response
+        return '', 200
     
     # Handle POST request
     data = request.get_json()
@@ -104,9 +100,7 @@ def chat():
     raw_response = query_engine.query(user_query)
     motivational_response = make_motivational_sister(str(raw_response))
     
-    response = jsonify({'answer': motivational_response})
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    return response
+    return jsonify({'answer': motivational_response})
 
 if __name__ == '__main__':
     import os
