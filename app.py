@@ -9,7 +9,7 @@ from llama_index.core.prompts import PromptTemplate
 import os
 
 app = Flask(__name__)
-CORS(app, origins=['https://herhaq.org', 'https://www.herhaq.org'], supports_credentials=True)
+CORS(app, origins=['https://herhaq.org', 'https://www.herhaq.org', 'https://herhaq-frontend.vercel.app'], supports_credentials=True)
 
 # Set your system prompt here
 SYSTEM_PROMPT = (
